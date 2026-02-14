@@ -1,0 +1,33 @@
+{
+  "name": "diaroo",
+  "version": "1.0.0",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "dev": "vite",
+    "build": "vite build",
+    "preview": "vite preview",
+    "tauri": "tauri",
+    "generate-sprites": "node scripts/generate-cat-sprites.mjs"
+  },
+  "devDependencies": {
+    "@sveltejs/vite-plugin-svelte": "^6.2.4",
+    "@tauri-apps/cli": "^2.10.0",
+    "@tsconfig/svelte": "^5.0.7",
+    "canvas": "^3.2.1",
+    "svelte": "^5.50.1",
+    "svelte-check": "^4.3.6",
+    "tslib": "^2.8.1",
+    "typescript": "^5.9.3",
+    "vite": "^7.3.1"
+  },
+  "dependencies": {
+    "@tauri-apps/api": "^2.10.1",
+    "@tauri-apps/plugin-dialog": "^2.6.0",
+    "@tauri-apps/plugin-fs": "^2.4.5",
+    "@tauri-apps/plugin-notification": "^2.3.3",
+    "@tauri-apps/plugin-autostart": "^2",
+    "@tauri-apps/plugin-shell": "^2.3.5",
+    "marked": "^17.0.1"
+  }
+}

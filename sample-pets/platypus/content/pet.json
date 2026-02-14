@@ -1,0 +1,30 @@
+{
+  "name": "platypus",
+  "displayName": "Platypus",
+  "version": "1.0.0",
+  "author": "JD",
+  "spriteSize": 48,
+  "animations": {
+    "idle": {
+      "frames": 2,
+      "frameDuration": 500,
+      "loop": true
+    },
+    "sleep": {
+      "frames": 2,
+      "frameDuration": 500,
+      "loop": true
+    },
+    "walk": {
+      "frames": 2,
+      "frameDuration": 500,
+      "loop": true
+    },
+    "run": {
+      "frames": 2,
+      "frameDuration": 1000,
+      "loop": true
+    }
+  },
+  "defaultAnimation": "idle"
+}

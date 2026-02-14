@@ -1,0 +1,10 @@
+{
+  "name": "cat",
+  "displayName": "Pixel Cat",
+  "version": "1.0.0",
+  "spriteSize": 16,
+  "animations": {
+    "idle": { "frames": 4, "frameDuration": 300, "loop": true }
+  },
+  "defaultAnimation": "idle"
+}

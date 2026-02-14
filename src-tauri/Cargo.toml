@@ -1,0 +1,56 @@
+[package]
+name = "diaroo"
+version = "1.0.0"
+description = "Diaroo - A desktop pet that monitors your activity"
+authors = ["you"]
+license = "MIT"
+repository = "https://github.com/YOUR_USERNAME/diaroo"
+edition = "2021"
+rust-version = "1.77.2"
+
+[lib]
+name = "app_lib"
+crate-type = ["staticlib", "cdylib", "rlib"]
+
+[build-dependencies]
+tauri-build = { version = "2", features = [] }
+
+[dependencies]
+tauri = { version = "2", features = ["macos-private-api", "tray-icon", "image-png"] }
+tauri-plugin-log = "2"
+tauri-plugin-shell = "2"
+tauri-plugin-opener = "2"
+tauri-plugin-notification = "2"
+tauri-plugin-dialog = "2"
+tauri-plugin-fs = "2"
+tauri-plugin-autostart = "2"
+serde = { version = "1", features = ["derive"] }
+serde_json = "1"
+log = "0.4"
+tokio = { version = "1", features = ["time", "fs", "process", "sync", "macros"] }
+reqwest = { version = "0.12", features = ["json", "rustls-tls"], default-features = false }
+rusqlite = { version = "0.31", features = ["bundled"] }
+image = { version = "0.25", features = ["jpeg", "png"] }
+xcap = "0.8"
+chrono = { version = "0.4", features = ["serde"] }
+base64 = "0.22"
+dirs = "5"
+uuid = { version = "1", features = ["v4"] }
+anyhow = "1"
+zip = "2"
+
+[target.'cfg(target_os = "macos")'.dependencies]
+objc2 = "0.6"
+objc2-foundation = { version = "0.3", features = ["NSString", "NSArray", "NSDictionary", "NSObject"] }
+objc2-app-kit = { version = "0.3", features = ["NSWorkspace", "NSRunningApplication"] }
+core-graphics = "0.24"
+core-foundation = "0.10"
+
+[target.'cfg(windows)'.dependencies]
+windows = { version = "0.58", features = [
+  "Win32_UI_WindowsAndMessaging",
+  "Win32_Foundation",
+  "Win32_UI_Accessibility",
+  "Win32_System_Threading",
+  "Win32_System_ProcessStatus",
+] }
