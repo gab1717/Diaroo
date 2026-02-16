@@ -325,8 +325,6 @@ impl LlmClient {
         if let Some(workspace_dir) = self.prepare_workspace_dir() {
             cmd.arg("--cd")
                 .arg(&workspace_dir)
-                .arg("--add-dir")
-                .arg(&workspace_dir)
                 .current_dir(&workspace_dir);
         }
 
