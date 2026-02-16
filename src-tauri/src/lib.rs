@@ -657,7 +657,20 @@ pub fn run() {
                     .unwrap_or_else(|_| chrono::NaiveTime::from_hms_opt(9, 0, 0).unwrap());
                     let now = chrono::Local::now().time();
 
-                    if now >= target_time {
+                    // Also check the report generation time — if it has already passed,
+                    // there is no point in starting monitoring.
+                    let report_time_passed = if cfg.auto_report_enabled {
+                        let report_time = chrono::NaiveTime::parse_from_str(
+                            &cfg.auto_report_time,
+                            "%H:%M",
+                        )
+                        .unwrap_or_else(|_| chrono::NaiveTime::from_hms_opt(17, 0, 0).unwrap());
+                        now >= report_time
+                    } else {
+                        false
+                    };
+
+                    if now >= target_time && !report_time_passed {
                         let app_handle = app.handle().clone();
                         let activity_log = state.activity_log.clone();
                         let (stop_tx, stop_rx) = tokio::sync::watch::channel(false);
@@ -679,6 +692,8 @@ pub fn run() {
                             .title("Diaroo")
                             .body("Monitoring started (scheduled)")
                             .show();
+                    } else if report_time_passed {
+                        log::info!("Monitoring auto-start skipped — report generation time already passed");
                     }
 
                     // Start the scheduler for future triggers (next day if already passed)
