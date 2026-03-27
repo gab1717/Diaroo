@@ -43,11 +43,13 @@ struct OpenRouterResponse {
 #[derive(Debug, Deserialize)]
 struct Choice {
     message: ResponseMessage,
+    finish_reason: Option<String>,
 }
 
 #[derive(Debug, Deserialize)]
 struct ResponseMessage {
-    content: String,
+    content: Option<String>,
+    reasoning: Option<String>,
 }
 
 #[derive(Debug, Deserialize)]
@@ -207,7 +209,7 @@ impl LlmClient {
                 role: "user".to_string(),
                 content: content_parts,
             }],
-            max_tokens: 2048,
+            max_tokens: 16384,
         };
 
         let mut req = self.client.post(&self.endpoint).json(&request);
@@ -240,19 +242,31 @@ impl LlmClient {
             return Err(anyhow!("API error ({}): {}", status, text));
         }
 
-        let body: OpenRouterResponse = response.json().await?;
+        let body_text = response.text().await?;
+        log::debug!("API raw response: {}", body_text);
+
+        let body: OpenRouterResponse = serde_json::from_str(&body_text)
+            .map_err(|e| anyhow!("Failed to parse API response: {}. Body: {}", e, body_text))?;
 
         if let Some(err) = body.error {
             return Err(anyhow!("API error: {}", err.message));
         }
 
-        let text = body
-            .choices
-            .and_then(|c| c.into_iter().next())
-            .map(|c| c.message.content)
+        let first_choice = body.choices.and_then(|c| c.into_iter().next());
+
+        if let Some(ref choice) = first_choice {
+            if choice.finish_reason.as_deref() == Some("length") {
+                log::warn!("LLM hit max_tokens limit (finish_reason=length). Response may be truncated or empty.");
+            }
+        }
+
+        let text = first_choice
+            .and_then(|c| c.message.content.filter(|s| !s.trim().is_empty())
+                .or(c.message.reasoning))
             .unwrap_or_default();
 
         if text.trim().is_empty() {
+            log::error!("LLM returned empty response. Raw body: {}", body_text);
             return Err(anyhow!("LLM returned empty response"));
         }
 

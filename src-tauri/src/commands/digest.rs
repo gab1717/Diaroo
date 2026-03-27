@@ -29,7 +29,10 @@ pub async fn generate_digest(
     let report_path =
         DigestGenerator::generate_digest_for_date(&activity_log, &store, &llm, &target_date)
             .await
-            .map_err(|e| e.to_string())?;
+            .map_err(|e| {
+                log::error!("Failed to generate digest for {}: {:?}", target_date, e);
+                e.to_string()
+            })?;
 
     // Stop monitoring — report marks end of work
     let was_monitoring = {
